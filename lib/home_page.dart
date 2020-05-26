@@ -1,7 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sellusedstuff/login_screen.dart';
+import 'package:sellusedstuff/auth_screen/login_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -25,9 +25,14 @@ class _HomePageState extends State<HomePage> {
                   return LoginScreen();
                 }));
               },
-              leading: Icon( Icons.home,color: Colors.blue,),
-              title: Text("Start",style: TextStyle(color: Colors.blue),),
+              leading: Icon( Icons.supervised_user_circle,color: Colors.blue,),
+              title: Text("Account",style: TextStyle(color: Colors.blue),),
             ), ListTile(
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                  return LoginScreen();
+                }));
+              },
               leading: Icon(Icons.search,color: Colors.blue,),
               title: Text("search",style: TextStyle(color: Colors.blue),),
             ), ListTile(
@@ -52,21 +57,24 @@ class _HomePageState extends State<HomePage> {
         color: Color(0xFFEDEDED),
         child: Stack(
           children: <Widget>[
+            Container(
+              height: 160,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30))
+                ,color: Colors.blue[400],
+              ),
+
+            ),
             Padding(
               padding: const EdgeInsets.all(30.0),
               child: Card(
+                color: Colors.pink,
                 borderOnForeground: true,
-                clipBehavior:  Clip.antiAlias,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20)
-                  ),
-
-                  height: 200,
-
+                child:Container(
+                  child: Text("DJJ"),
                 ),
-              ),
+
+   ),
             )
 
 
@@ -74,12 +82,13 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       appBar: AppBar(
-        actionsIconTheme:  IconThemeData(color: Colors.blue[700],size: 35),
-        iconTheme:  IconThemeData(color: Color(0xff383840),size: 35),
-        title: Icon(FontAwesomeIcons.shoppingBag,color: Colors.blueAccent,),
-        backgroundColor:Color(0xFFEDEDED),
+
+        actionsIconTheme:  IconThemeData(color: Colors.white,size: 35),
+        iconTheme:  IconThemeData(color: Colors.white,size: 35),
+        title: Icon(FontAwesomeIcons.shoppingBag,color: Colors.white,),
+        backgroundColor:Colors.blue[400],
         elevation: 0,
-        actions: <Widget>[Icon(Icons.notifications,color: Colors.blueAccent,size: 30,)],
+        actions: <Widget>[Icon(Icons.notifications,color: Colors.white,size: 30,)],
         centerTitle: true,
       ),
       bottomNavigationBar: CurvedNavigationBar(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_page.dart';
-import 'login_screen.dart';
+import 'auth_screen/login_screen.dart';
 import 'utils/welcome.dart';
 
 void main() async {
@@ -14,8 +14,7 @@ void main() async {
   }else{
     String userId=sharedPreferences.getString('user_id');
     if(userId == null|| userId ==''){
-
-      homeScreen=LoginScreen();
+      homeScreen=HomePage();
 
     }
 

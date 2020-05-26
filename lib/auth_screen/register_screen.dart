@@ -4,15 +4,15 @@ import 'package:sellusedstuff/utils/shared_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-import '../login_screen.dart';
+import 'login_screen.dart';
 import '../mainTheme.dart';
 
-class ClientRegisterScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
   _ClientRegisterScreenState createState() => _ClientRegisterScreenState();
 }
 
-class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
+class _ClientRegisterScreenState extends State<RegisterScreen> {
   String email;
   String password;
   String passwordConfirm;
@@ -49,75 +49,85 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
     fontWidgetSize = WidgetSize(sizeConfig);
     return Scaffold(
       appBar: appBar(context, 'Sign Up'),
-      body: Padding(
-        padding: EdgeInsets.only(right: sizeConfig.screenWidth*0.03,left:sizeConfig.screenWidth*0.03,bottom:sizeConfig.screenHeight*0.05),
-        child: Form(
-            key: _formKey,
-            child:
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                SizedBox(
-                  height: 75,
-                ),
-                TextFormField(
-                  style: TextStyle(
-                      fontFamily: 'SFPro',
-                      fontSize: fontWidgetSize.bodyFontSize),
-                  decoration: InputDecoration(
-                    hintText: "email",
-                  ),
-                ),
-                TextFormField(
-                  style: TextStyle(
-                      fontFamily: 'SFPro',
-                      fontSize: fontWidgetSize.bodyFontSize),
-                  decoration: InputDecoration(
-                    hintText: "password",
-                  ),
-                ),
-                TextFormField(
-                  style: TextStyle(
-                      fontFamily: 'SFPro',
-                      fontSize: fontWidgetSize.bodyFontSize),
-                  decoration: InputDecoration(
-                    hintText: "confirm password",
-                  ),
-                ),
-                registerButton(context, 'Sign Up',signUpMethod),
-                Center(
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        'Already Member?',
-                        style: TextStyle(
-                            color: Color(0xFF8A8A8A),
-                            fontSize: fontWidgetSize.bodyFontSize - 2,
-                            fontFamily: 'SFPro'),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          color:Colors.blueAccent,
+          child: Padding(
+            padding: EdgeInsets.only(right: sizeConfig.screenWidth*0.03,left:sizeConfig.screenWidth*0.03,bottom:sizeConfig.screenHeight*0.05),
+            child: Form(
+                key: _formKey,
+                child:
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 75,
+                    ),
+                    TextFormField(
+                      style: TextStyle(
+                          fontFamily: 'SFPro',
+                          fontSize: fontWidgetSize.bodyFontSize),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.email,color: Colors.white,),
+                        hintStyle: TextStyle(color: Colors.white),
+                        hintText: "Email",  ),
+                    ),
+                    TextFormField(
+                      style: TextStyle(
+                          fontFamily: 'SFPro',
+                          fontSize: fontWidgetSize.bodyFontSize),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.lock,color: Colors.white,),
+                        hintText: "password", hintStyle: TextStyle(color: Colors.white),
                       ),
-                      Padding(padding: EdgeInsets.only(right: 5)),
-                      FlatButton(
-                        child: Text(
-                          'SignIn',
-                          style: TextStyle(
-                              color: mainTheme.primaryColorDark,
-                              fontSize: fontWidgetSize.bodyFontSize,
-                              fontFamily: 'SFPro'),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) {
-                                return LoginScreen();
-                              }));
-                        },
-                      )
-                    ],
-                  ),
-                ),
-                or(context),
+                    ),
+                    TextFormField(
+                      style: TextStyle(
+                          fontFamily: 'SFPro',
+                          fontSize: fontWidgetSize.bodyFontSize),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.lock,color: Colors.white,),
+                        hintText: "confirm password",
+                        hintStyle: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    registerButton(context, 'Sign Up',signUpMethod),
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Already Member?',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: fontWidgetSize.bodyFontSize - 2,
+                                fontFamily: 'SFPro'),
+                          ),
+                          Padding(padding: EdgeInsets.only(right: 5)),
+                          FlatButton(
+                            child: Text(
+                              'SignIn',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: fontWidgetSize.bodyFontSize,
+                                  fontFamily: 'SFPro'),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(builder: (context) {
+                                    return LoginScreen();
+                                  }));
+                            },
+                          )
+                        ],
+                      ),
+                    ),
 
-              ],
-            )),
+                  ],
+                )),
+          ),
+        ),
       ),
     );
   }
