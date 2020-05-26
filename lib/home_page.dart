@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sellusedstuff/login_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,9 +11,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     return Scaffold(
-      //   key: _scaffoldKey,
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
@@ -21,7 +20,12 @@ class _HomePageState extends State<HomePage> {
               ClipRRect(borderRadius: BorderRadius.circular(40),child: Image.network("https://cdn2.f-cdn.com/ppic/140047602/logo/41720176/nTxdl/profile_logo_.jpeg")),
             ),
             ListTile(
-              leading: Icon(Icons.home,color: Colors.blue,),
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                  return LoginScreen();
+                }));
+              },
+              leading: Icon( Icons.home,color: Colors.blue,),
               title: Text("Start",style: TextStyle(color: Colors.blue),),
             ), ListTile(
               leading: Icon(Icons.search,color: Colors.blue,),
