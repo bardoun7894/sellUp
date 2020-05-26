@@ -5,7 +5,7 @@ import 'package:sellusedstuff/utils/shared_widget.dart';
 import 'package:sellusedstuff/utils/welcome.dart';
 
 import 'register_screen.dart';
-import '../mainTheme.dart';
+import '../utils/mainTheme.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key}) : super(key: key);
@@ -34,9 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     sizeConfig=SizeConfig(context);
     fontWidgetSize=WidgetSize(sizeConfig);
-    print(sizeConfig.screenHeight);
 
-    print(sizeConfig.screenWidth);
     return Scaffold(
 
       appBar: appBar(context,'Sign In'),

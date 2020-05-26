@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 import 'login_screen.dart';
-import '../mainTheme.dart';
+import '../utils/mainTheme.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override

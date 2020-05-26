@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sellusedstuff/utils/screen_size.dart';
 
 
-import '../mainTheme.dart';
+import 'mainTheme.dart';
 WidgetSize fontWidgetSize ;
 SizeConfig sizeConfig;
 

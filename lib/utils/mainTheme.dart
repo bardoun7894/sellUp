@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 ThemeData mainTheme =ThemeData(
-  primaryColorDark: Colors.blueAccent,
+  primaryColorDark: Colors.blue[400],
   primaryColorLight: Color(0xffEDEDED),
   accentColor:  Color(0xFF636363),
   fontFamily: 'SFPro',

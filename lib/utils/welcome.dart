@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../WelcomeModel.dart';
+import '../model/WelcomeModel.dart';
 import '../home_page.dart';
-import '../mainTheme.dart';
+import 'mainTheme.dart';
 import 'screen_size.dart';
 
 class WelcomePage extends StatefulWidget {
