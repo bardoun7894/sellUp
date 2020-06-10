@@ -1,9 +1,16 @@
+
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sellusedstuff/home_page.dart';
 import 'package:sellusedstuff/utils/screen_size.dart';
 import 'package:sellusedstuff/utils/shared_widget.dart';
+import 'package:sellusedstuff/utils/show_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
+import '../constant.dart';
 import 'login_screen.dart';
 import '../utils/mainTheme.dart';
 
@@ -17,14 +24,15 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
   String password;
   String passwordConfirm;
   TextEditingController _emailController = TextEditingController();
-
+  FirebaseAuth _firebaseAuth =FirebaseAuth.instance;
   TextEditingController _passwordController = TextEditingController();
 
   TextEditingController _passwordConfirmController = TextEditingController();
   WidgetSize fontWidgetSize;
   SizeConfig sizeConfig;
   final _formKey = GlobalKey<FormState>();
-
+  bool isEnabled =true;
+  bool autoFormatValidator = false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -56,6 +64,7 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
           child: Padding(
             padding: EdgeInsets.only(right: sizeConfig.screenWidth*0.03,left:sizeConfig.screenWidth*0.03,bottom:sizeConfig.screenHeight*0.05),
             child: Form(
+              autovalidate: autoFormatValidator,
                 key: _formKey,
                 child:
                 Column(
@@ -65,6 +74,14 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
                       height: 75,
                     ),
                     TextFormField(
+                      controller: _emailController,
+                      enabled: isEnabled,
+                      validator: (value){
+                        if(value.isEmpty){
+                            return "email is required ";
+                        }
+                        return null;
+                      },
                       style: TextStyle(
                           fontFamily: 'SFPro',
                           fontSize: fontWidgetSize.bodyFontSize),
@@ -74,6 +91,15 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
                         hintText: "Email",  ),
                     ),
                     TextFormField(
+                      enabled: isEnabled,
+                      controller: _passwordController,
+                      validator: (value){
+                        if(value.isEmpty){
+                          return "password is required ";
+                        }
+                        return null;
+                      },
+                      obscureText: true,
                       style: TextStyle(
                           fontFamily: 'SFPro',
                           fontSize: fontWidgetSize.bodyFontSize),
@@ -83,6 +109,23 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     TextFormField(
+                      obscureText: true,
+                      enabled: isEnabled,
+                      controller: _passwordConfirmController,
+                      validator: (value){
+
+                        if(value.isEmpty){
+                          return "password confirm is required ";
+                        }
+                        else if (value != _passwordController.text){
+                          return "password confirm not match ";
+                        }
+                        return null;
+
+                      }
+
+
+                      ,
                       style: TextStyle(
                           fontFamily: 'SFPro',
                           fontSize: fontWidgetSize.bodyFontSize),
@@ -92,7 +135,7 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
                         hintStyle: TextStyle(color: Colors.white),
                       ),
                     ),
-                    registerButton(context, 'Sign Up',signUpMethod),
+                    registerButton(context, 'Sign Up',signUpMethod,isEnabled),
                     Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -114,8 +157,7 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
                                   fontFamily: 'SFPro'),
                             ),
                             onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(builder: (context) {
+                              Navigator.of(context).pushReplacement(    MaterialPageRoute(builder: (context) {
                                     return LoginScreen();
                                   }));
                             },
@@ -131,10 +173,49 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-  void signUpMethod(){
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-      return LoginScreen();
-    }));
+  void signUpMethod()async{
+    userAccountDetails();
+        if(isEnabled){
+          if(_formKey.currentState.validate()){
+            setState(() {
+              autoFormatValidator=true;
+              isEnabled=false;
+              callFirebaseToSignUp();
+            });
+          }
+        }
+  }
+
+  void callFirebaseToSignUp()async {
+    SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
+      _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password).then((value) {
+        if(value.user!=null){
+          sharedPreferences.setString(Constant.Kuser_id ,value.user.uid);
+
+          Firestore.instance.collection("profiles").document().setData(
+              {
+                Constant.Kuser_id : value.user.uid
+              }).then((value) {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+              return HomePage();
+            }   ));
+          }
+          ).catchError((onError){    print(onError.toString());});  }
+      }
+      ).catchError((onError){
+        String l =onError.toString().split(",")[1];
+        showMyDialog('Register Failed !',l,context);
+        setState(() {
+          isEnabled=true;
+        });
+      });
+  }
+
+
+  void userAccountDetails(){
+    email=_emailController.text.trim();
+    password=_passwordController.text.trim();
+    passwordConfirm = _passwordConfirmController.text.trim();
   }
 
 

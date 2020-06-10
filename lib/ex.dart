@@ -38,8 +38,8 @@ class _HomePageState extends State<HomePage> {
     Product(
         imagePath: "https://sslimages.shoppersstop.com/sys-master/root/h19/h80/14520642863134/0020_SS_High_waisted_fashion_How_can_men_style_this_trend_Featured-image.jpg",
         nameProduct:"firstImage",
-      priceProduct: 10.0
-        ),
+        priceProduct: 10.0
+    ),
     Product(
         imagePath:"https://i.pinimg.com/originals/0e/fe/64/0efe64037fecefddb409d338f9d2f0bc.jpg",
         nameProduct: "secondImage",
@@ -65,9 +65,9 @@ class _HomePageState extends State<HomePage> {
 
   ];
   int currentIndex = 1;
- String userID ="";
+  String userID ="";
 
- bool isReady  =false;
+  bool isReady  =false;
 
   @override
   void initState() {
@@ -103,6 +103,7 @@ class _HomePageState extends State<HomePage> {
     }
     return newProducts;
   }
+
   Widget _drawCarousselProducts(BuildContext context, List<Product> products) {
     //todo  make random carousel images products
     List<Product> _products = _randomTopProducts(products);
@@ -129,50 +130,51 @@ class _HomePageState extends State<HomePage> {
                       child: Image(
                           fit: BoxFit.cover,
                           image:
-                              NetworkImage(_products[position].imagePath)),
+                          NetworkImage(_products[position].imagePath)),
                     ),
                   );
                 }),
           ),
           Container(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _pageViewDots(6 , context),
-                   ),
-          )),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _pageViewDots(6 , context),
+                ),
+              )),
         ],
       ),
     );
   }
+
   Widget gridListProducts() {
 
 
     return GridView.builder(
-      itemCount: pr.length,
+        itemCount: pr.length,
         itemBuilder: (BuildContext context,int index){
           return Container(
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 5,
-            ),
-            Image(
-                height: 150,
-                width: 180,
-                fit: BoxFit.cover,
-                image: NetworkImage(pr[index].imagePath)
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 5,
+                ),
+                Image(
+                    height: 150,
+                    width: 180,
+                    fit: BoxFit.cover,
+                    image: NetworkImage(pr[index].imagePath)
 
-            ),
-            Text(pr[index].nameProduct),
-            Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
+                ),
+                Text(pr[index].nameProduct),
+                Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
 
-          ],
-         ),);
-     },
-     physics: FixedExtentScrollPhysics(),
-     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(  crossAxisCount:  2 ));
+              ],
+            ),);
+        },
+        physics: FixedExtentScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(  crossAxisCount:  2 ));
 
 //    return GridView.count(
 //
@@ -204,8 +206,11 @@ class _HomePageState extends State<HomePage> {
 //    );
 
   }
+
   WidgetSize fontWidgetSize;
   SizeConfig sizeConfig;
+
+
   Widget buildIcon(int index) {
     return Container(
       height: 50,
@@ -218,57 +223,58 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
+
     sizeConfig = SizeConfig(context);
     fontWidgetSize = WidgetSize(sizeConfig);
     return Scaffold(
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-           isReady==true ? StreamBuilder(
-              stream:  Firestore.instance.collection("profiles").where( Constant.Kuser_id,isEqualTo:userID ).snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                switch(snapshot.connectionState){
-                  case ConnectionState.none:
-                  profileFormInfo(snapshot);
-                  break;
-                  case ConnectionState.waiting:
-                return UserAccountsDrawerHeader(
-                      accountName: Text(" No Account "),
-                      accountEmail: Text("   "),
-                      currentAccountPicture:
-                  CircleAvatar(
-                       backgroundColor: Colors.grey,
-                       child: Icon(Icons.person),
-                     ),
-                    );
-                  break;
-                  case ConnectionState.active:
-                  case ConnectionState.done:
-                    if(!snapshot.hasData){
-                      return error("has no data");
+            isReady==true ? StreamBuilder(
+                stream:  Firestore.instance.collection("profiles").where( Constant.Kuser_id,isEqualTo:userID ).snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  switch(snapshot.connectionState){
+                    case ConnectionState.none:
+                      profileFormInfo(snapshot);
+                      break;
+                    case ConnectionState.waiting:
+                      return UserAccountsDrawerHeader(
+                        accountName: Text(" No Account "),
+                        accountEmail: Text("   "),
+                        currentAccountPicture:
+                        CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          child: Icon(Icons.person),
+                        ),
+                      );
+                      break;
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      if(!snapshot.hasData){
+                        return error("has no data");
                       }
-                    if(snapshot.hasError){
-                   return Text("erro");
-                    }
-                    break;
-                }
-                 return profileFormInfo(snapshot);
-                 } ):Container(),
+                      if(snapshot.hasError){
+                        return Text("erro");
+                      }
+                      break;
+                  }
+                  return profileFormInfo(snapshot);
+                } ):Container(),
             ListTile(
               onTap: () async{
 
-               SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-               String userId = sharedPreferences.getString(Constant.Kuser_id);
-                 print(userId);
-              if(userId == null|| userId =='') {
-                Navigator.of(context) .push(MaterialPageRoute(builder: (BuildContext context) {
-                return LoginScreen();
-                }));
-               }else{
-                Navigator.of(context) .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return Profile();
-                }));
-                    }
+                SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                String userId = sharedPreferences.getString(Constant.Kuser_id);
+                print(userId);
+                if(userId == null|| userId =='') {
+                  Navigator.of(context) .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return LoginScreen();
+                  }));
+                }else{
+                  Navigator.of(context) .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return Profile();
+                  }));
+                }
 
 
 
@@ -346,7 +352,7 @@ class _HomePageState extends State<HomePage> {
 
               },
               leading: Icon(
-               FontAwesomeIcons.outdent,
+                FontAwesomeIcons.outdent,
                 color: Colors.blue,
               ),
               title: Text(
@@ -357,123 +363,99 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: CustomScrollView(
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: sizeConfig.screenHeight,
+              color: Color(0xFFEDEDED),
+              child: Column(
+                children: <Widget>[
+                  _drawCarousselProducts(context, pr),
+                  Padding(
+                    padding:EdgeInsets.only(top: 5,left: 10,right: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("Categories",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            InkWell(
+                                onTap: (){
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                                    return AutoScreenCategories();
+                                  }));
+                                },
+                                child:  buildIcon(0)   ),
+                            buildIcon(1),
+                            buildIcon(2),
+                            buildIcon(3),
+                            buildIcon(4),
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Text("recent Products",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Container(
+                              height: sizeConfig.screenHeight*.3,
+                              child: ListView.builder(
+                                itemCount: pr.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20)
+                                    ),
+                                    child: Column(
+                                      children: <Widget>[
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Image(
+                                            height: 150,
+                                            width: 180,
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(pr[index].imagePath)
 
-       slivers: <Widget>[
-         SliverToBoxAdapter(
-           child:   Container(
-             color: Color(0xFFEDEDED),
-             child: Column(
-               children: <Widget>[
-                 _drawCarousselProducts(context, pr),
-                 Padding(
-                   padding:EdgeInsets.only(top: 5,left: 10,right: 10),
-                   child: Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                     children: <Widget>[
-                       Text("Categories",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                       SizedBox(height: 10,),
-                       Row(
-                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                         crossAxisAlignment: CrossAxisAlignment.center,
-                         children: <Widget>[
-                           InkWell(
-                               onTap: (){
-                                 Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                                   return AutoScreenCategories();
-                                 }));
-                               },
-                               child:  buildIcon(0)   ),
-                           buildIcon(1),
-                           buildIcon(2),
-                           buildIcon(3),
-                           buildIcon(4),
-                         ],
-                       ),
-                       SizedBox(height: 10,),
-                       Text("recent Products",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                       Padding(
-                         padding: const EdgeInsets.only(top: 10.0),
-                         child: Container(
-                             height: sizeConfig.screenHeight*.3,
-                             child: ListView.builder(
-                               itemCount: pr.length,
-                               scrollDirection: Axis.horizontal,
-                               itemBuilder: (BuildContext context, int index) {
-                                 return Container(
-                                   padding: EdgeInsets.all(5),
-                                   decoration: BoxDecoration(
+                                        ),
+                                        Text(pr[index].nameProduct),
+                                        Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
 
-                                       borderRadius: BorderRadius.circular(50)
-                                   ),
-                                   child: Column(
-                                     children: <Widget>[
-                                       SizedBox(
-                                         height: 5,
-                                       ),
-                                       Image(
-                                           height: 150,
-                                           width: 180,
-                                           fit: BoxFit.cover,
-                                           image: NetworkImage(pr[index].imagePath)
+                                      ],
+                                    ),
+                                  );
+                                },
 
-                                       ),
-                                       Text(pr[index].nameProduct),
-                                       Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
+                              )
+                          ),
+                        ),
 
-                                     ],
-                                   ),
-                                 );
-                               },
+                      ],
+                    ),
+                  ),
+                  Text("recent Products",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+                  Flexible(
 
-                             )
-                         ),
-                       ),
-                       Padding(
-                         padding: const EdgeInsets.symmetric(vertical:12.0),
-                         child: Text("ALL CARS",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                       ),
+                    child: Container(
+                        height:1000,
+                        child: gridListProducts()),
+                  ),
 
-                     ],
-                   ),
-                 ),
 
-               ],
-             ),
-           ),
-         ),
-         SliverGrid(
-           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-           delegate: SliverChildBuilderDelegate(
-                 (BuildContext context, int index) {
-                   return Container(
-                     color: Color(0xFFEDEDED),
-                     child: Column(
-                       children: <Widget>[
+                ],
+              ),
+            ),
 
-                         Image(
-                             height: 150,
-                             width: 180,
-                             fit: BoxFit.cover,
-                             image: NetworkImage(pr[index].imagePath)
-
-                         ),
-                         Text(pr[index].nameProduct),
-                         Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
-
-                       ],
-                     ),);
-             },
-             childCount: pr.length,
-           ),
-         )
-
-       ],
-
+          ],
+        ),
       ),
       appBar: AppBar(
         actionsIconTheme:
-            IconThemeData(color: mainTheme.primaryColorDark, size: 35),
+        IconThemeData(color: mainTheme.primaryColorDark, size: 35),
         iconTheme: IconThemeData(color: mainTheme.primaryColorDark, size: 35),
         title: Text("Home",
             style: TextStyle(
@@ -545,11 +527,11 @@ class _HomePageState extends State<HomePage> {
                   ? mainTheme.primaryColorDark
                   : Colors.grey[400],
               borderRadius: BorderRadius.circular(5)),
-              width: 10,
-              height: 10,
-              margin: (i == qty - 1)
-                  ? EdgeInsets.only(right: 0)
-                  : EdgeInsets.only(right: 24)));
+          width: 10,
+          height: 10,
+          margin: (i == qty - 1)
+              ? EdgeInsets.only(right: 0)
+              : EdgeInsets.only(right: 24)));
     }
     return widgets;
   }

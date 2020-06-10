@@ -115,10 +115,12 @@ class _WelcomePageState extends State<WelcomePage> {
                   NextText,
                   style: TextStyle(color: Colors.white),
                 ),
-                onPressed: () {
+                onPressed: () async{
                   //TODO go next Slide
 
                   if (imInLastPage) {
+                    SharedPreferences pref = await SharedPreferences.getInstance();
+                    pref.setBool("seen", true);
                     _goToHomePage(context);
                   } else {
                     _pageController.nextPage(

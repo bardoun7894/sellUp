@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sellusedstuff/constant.dart';
 import 'package:sellusedstuff/utils/screen_size.dart';
 import 'package:sellusedstuff/utils/shared_widget.dart';
+import 'package:sellusedstuff/utils/show_dialog.dart';
 import 'package:sellusedstuff/utils/welcome.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../home_page.dart';
 import 'register_screen.dart';
 import '../utils/mainTheme.dart';
 
@@ -20,8 +25,13 @@ class _LoginScreenState extends State<LoginScreen> {
   WidgetSize fontWidgetSize ;
   SizeConfig sizeConfig;
   final _formKey =GlobalKey<FormState>();
+  final FirebaseAuth _firebaseAuth =FirebaseAuth.instance;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+
+  bool isEnabled= true;
+
+  bool autoFormatValidator =false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -34,22 +44,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
     sizeConfig=SizeConfig(context);
     fontWidgetSize=WidgetSize(sizeConfig);
-
     return Scaffold(
-
       appBar: appBar(context,'Sign In'),
-
       body: SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height,
           color: Colors.blueAccent,
           child: Padding(
-            padding:   EdgeInsets.only(right: sizeConfig.screenWidth*0.03,left:sizeConfig.screenWidth*0.03,bottom:sizeConfig.screenHeight*0.18,top:sizeConfig.screenHeight*0.15),
+            padding : EdgeInsets.only(right: sizeConfig.screenWidth*0.03,left:sizeConfig.screenWidth*0.03,bottom:sizeConfig.screenHeight*0.18,top:sizeConfig.screenHeight*0.15),
             child: Form(
+                autovalidate: autoFormatValidator,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   TextFormField(
+                    controller: _emailController,
+                    enabled: isEnabled,
+                    validator: (value){
+                      if(value.isEmpty){
+                        return "email is required ";
+                      }
+                      return null;
+                    },
                     style: TextStyle(fontFamily:'SFPro',fontSize: fontWidgetSize.bodyFontSize,color:Colors.white ),
                     decoration: InputDecoration(
                         icon: Icon(Icons.email,color: Colors.white,),
@@ -59,9 +75,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 10,),
                   TextFormField(
+                    enabled: isEnabled,
+                    obscureText: true,
+                    controller: _passwordController,
+                    validator: (value){
+                      if(value.isEmpty){
+                        return "password is required ";
+                      }
+                      return null;
+                    },
                     style:TextStyle(fontFamily:'SFPro',fontSize: fontWidgetSize.bodyFontSize,color: Colors.white ),
                     decoration: InputDecoration(   icon: Icon(Icons.lock,color: Colors.white,),
-
                       hintText: "password",  hintStyle: TextStyle(color: Colors.white)
                     ),
                   ),
@@ -76,8 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWidgetSize.bodyFontSize-2,fontFamily: 'SFPro'),
                       ))
                     ],
-                  )
-                  , registerButton(context, 'Sign In',signInMethod),
+                  )     ,
+                  registerButton(context, 'Sign In',signInMethod,isEnabled),
                   SizedBox(height: 10,),
                   or(context),
                   SizedBox(height: 10,),
@@ -119,11 +143,47 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  void signInMethod(){
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-      return WelcomePage();
-    }));
+
+
+  void signInMethod() {
+    userAccountDetails();
+    if(isEnabled){
+      if(_formKey.currentState.validate()){
+        setState(() {
+          autoFormatValidator=true;
+          isEnabled=false;
+          callFirebaseToSignIn();
+        });
+      }
+    }
   }
+
+  void callFirebaseToSignIn()async {
+SharedPreferences shared =await SharedPreferences.getInstance();
+
+   _firebaseAuth.signInWithEmailAndPassword(email: email, password: password).then((value) {
+     String userId = value.user.uid;
+     shared.setString(Constant.Kuser_id,userId);
+     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+       return HomePage();
+     }));
+   }).catchError((onError){
+     String l =onError.toString().split(",")[1];
+     showMyDialog('Login Failed !',"login faild please cheak again! ${l}", context);
+     setState(() {
+       isEnabled=true;
+     });
+   });
+       }
+
+  void userAccountDetails(){
+    email=_emailController.text.trim();
+    password=_passwordController.text.trim();
+  }
+
+
+
+
   void signUpMethod(){
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
       return RegisterScreen();

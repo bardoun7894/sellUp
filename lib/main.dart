@@ -8,16 +8,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   bool seen = sharedPreferences.getBool("seen");
+  print(seen);
   Widget homeScreen = HomePage();
-  if(seen ==null || !seen){
-    homeScreen=WelcomePage();
+  if(seen == null || !seen){
+    homeScreen= WelcomePage();
   }else{
-    String userId=sharedPreferences.getString('user_id');
-    if(userId == null|| userId ==''){
-      homeScreen=HomePage();
-
-    }
-
+    homeScreen=HomePage();
   }
   runApp(UseSell(homeScreen));
 }

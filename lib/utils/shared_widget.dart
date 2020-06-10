@@ -30,7 +30,7 @@ Widget divider(BuildContext context){
   );
 }
 
-Widget registerButton(BuildContext context,title,onPressed) {
+Widget registerButton(BuildContext context,title,onPressed,isEnabled) {
   return  Container(
     width: double.infinity,
     height: sizeConfig.screenHeight*.065,
@@ -39,7 +39,7 @@ Widget registerButton(BuildContext context,title,onPressed) {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(25))),
         color: Colors.white,
-        child: Text(title,
+        child:isEnabled!=true?Container(width: 25,height: 25,child: CircularProgressIndicator()):Text(title,
           style: TextStyle(
               fontFamily: 'SFPro',
               fontWeight: FontWeight.bold,
