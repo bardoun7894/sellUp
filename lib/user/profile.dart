@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sellusedstuff/auth_screen/login_screen.dart';
 import 'package:sellusedstuff/constant.dart';
-import 'package:sellusedstuff/home_page.dart';
+import 'package:sellusedstuff/home_screen.dart';
+import 'package:sellusedstuff/utils/widgets.dart';
+import 'file:///D:/n/sell_used_stuff/lib/pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -22,8 +24,7 @@ bool isReady=false;
   setState(() {
     userID = value.get(Constant.Kuser_id);
     isReady=true;
-     });
-    });
+     }); });
   }
   @override
   Widget build(BuildContext context) {
@@ -58,13 +59,8 @@ bool isReady=false;
       ):loading(),
     );
   }
-  Widget loading(){
-    return Center(child: CircularProgressIndicator());
-  }
 
-  Widget error(String message){
-    return Center(child: Text(message,style: TextStyle(color: Colors.red),));
-  }
+
   Widget profileForm(AsyncSnapshot<QuerySnapshot> data) {
     if (data.data.documents.length == 0 || data.data.documents == null) {
       return error("no Data");
@@ -94,7 +90,7 @@ bool isReady=false;
                    setState(() {
                      shared.setString(Constant.Kuser_id, "");
                      FirebaseAuth.instance.signOut();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) {   return HomePage();  }));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) {   return HomeScreen();  }));
                      userID="";
                    });
                  },child: Text("LOGOUT"),)

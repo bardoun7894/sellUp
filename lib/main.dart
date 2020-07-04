@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sellusedstuff/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'home_page.dart';
+import 'pages/home_page.dart';
 import 'auth_screen/login_screen.dart';
 import 'utils/welcome.dart';
 
@@ -9,17 +10,16 @@ void main() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   bool seen = sharedPreferences.getBool("seen");
   print(seen);
-  Widget homeScreen = HomePage();
+  Widget homeScreen = HomeScreen();
   if(seen == null || !seen){
-    homeScreen= WelcomePage();
+    homeScreen = WelcomePage();
   }else{
-    homeScreen=HomePage();
+    homeScreen = HomeScreen();
   }
   runApp(UseSell(homeScreen));
 }
 class UseSell extends StatelessWidget {
   Widget homeScreen;
-
   UseSell(this.homeScreen);
   @override
   Widget build(BuildContext context) {

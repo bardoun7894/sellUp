@@ -6,16 +6,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'file:///D:/n/sell_used_stuff/lib/pages/add_product.dart';
 import 'package:sellusedstuff/auth_screen/login_screen.dart';
 import 'package:sellusedstuff/constant.dart';
+import 'package:sellusedstuff/ui/productDetails.dart';
 import 'package:sellusedstuff/user/profile.dart';
 import 'package:sellusedstuff/utils/mainTheme.dart';
 import 'package:sellusedstuff/utils/screen_size.dart';
+import 'package:sellusedstuff/utils/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Categories/AutoWheel&Boot.dart';
-import 'model/Product.dart';
-import 'model/user.dart';
+import '../Categories/AutoWheel&Boot.dart';
+import '../model/Product.dart';
+import '../model/user.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -34,41 +37,34 @@ class _HomePageState extends State<HomePage> {
     FontAwesomeIcons.random,
     FontAwesomeIcons.car,
   ];
+
   List<Product> pr = [
     Product(
         imagePath: "https://sslimages.shoppersstop.com/sys-master/root/h19/h80/14520642863134/0020_SS_High_waisted_fashion_How_can_men_style_this_trend_Featured-image.jpg",
         nameProduct:"firstImage",
       priceProduct: 10.0
-        ),
-    Product(
+        ),  Product(
         imagePath:"https://i.pinimg.com/originals/0e/fe/64/0efe64037fecefddb409d338f9d2f0bc.jpg",
         nameProduct: "secondImage",
         priceProduct: 20.0
-    ),
-    Product(
+    ),   Product(
         imagePath: "https://sslimages.shoppersstop.com/sys-master/root/h19/h80/14520642863134/0020_SS_High_waisted_fashion_How_can_men_style_this_trend_Featured-image.jpg",
         nameProduct:"firstImage",
-        priceProduct: 30.0),
-    Product(
+        priceProduct: 30.0),   Product(
         imagePath:"https://i.pinimg.com/originals/0e/fe/64/0efe64037fecefddb409d338f9d2f0bc.jpg",
         nameProduct: "secondImage",
         priceProduct: 40.0
-    ),
-    Product(
+    ), Product(
         imagePath: "https://sslimages.shoppersstop.com/sys-master/root/h19/h80/14520642863134/0020_SS_High_waisted_fashion_How_can_men_style_this_trend_Featured-image.jpg",
         nameProduct:"firstImage",
-        priceProduct: 10.0),
-    Product(
+        priceProduct: 10.0),  Product(
         imagePath:"https://i.pinimg.com/originals/0e/fe/64/0efe64037fecefddb409d338f9d2f0bc.jpg",
         nameProduct: "secondImage",
         priceProduct: 10.0),
-
   ];
   int currentIndex = 1;
  String userID ="";
-
  bool isReady  =false;
-
   @override
   void initState() {
     super.initState();
@@ -76,14 +72,13 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences.getInstance().then((value) {
       setState(() {
         isReady = true;
-        userID = value.getString(Constant.Kuser_id);
-        print("userID HOME"+userID);
+        if(value.getString(Constant.Kuser_id)!=null){
+          userID = value.getString(Constant.Kuser_id);
+          print("userID HOME" + userID);
+        }
       });
-
     });
-
   }
-
 //todo String Tag  must change to Products Model
   List<Product> _randomTopProducts(List<Product> products) {
     List<int> indexes = [];
@@ -109,30 +104,38 @@ class _HomePageState extends State<HomePage> {
     return Container(
       child: Column(
         children: <Widget>[
-          SizedBox(
-            height: sizeConfig.screenHeight * .20,
-            child: PageView.builder(
-                onPageChanged: (int index) {
-                  setState(() {
-                    currentIndex = index;
-                  });
-                },
-                controller: _pageController,
-                itemCount: _products.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, position) {
-                  return Card(
-                    clipBehavior: Clip.hardEdge,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25)),
-                    child: Container(
-                      child: Image(
-                          fit: BoxFit.cover,
-                          image:
-                              NetworkImage(_products[position].imagePath)),
-                    ),
-                  );
-                }),
+          Hero(
+            tag: "do",
+            child: InkWell(
+              onTap: (){
+                //go to product details page
+                goToProductDetailsPage( _products[currentIndex].priceProduct, _products[currentIndex].nameProduct,_products[currentIndex].imagePath);
+              },
+              child: SizedBox(
+                height: sizeConfig.screenHeight * .20,
+                child: PageView.builder(
+                    onPageChanged: (int index) {
+                      setState(() {
+                        currentIndex = index;
+                      });
+                    },
+                    controller: _pageController,
+                    itemCount: _products.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, position) {
+                      return Card(
+                        clipBehavior: Clip.hardEdge,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25)),
+                        child: Container(
+                          child: Image(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(_products[position].imagePath)),
+                        ),
+                      );
+                    }),
+              ),
+            ),
           ),
           Container(
           child: Padding(
@@ -147,24 +150,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
   Widget gridListProducts() {
-
-
     return GridView.builder(
       itemCount: pr.length,
         itemBuilder: (BuildContext context,int index){
           return Container(
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 5,
-            ),
-            Image(
+            SizedBox(  height: 5,     ),
+            Image
+                (
                 height: 150,
                 width: 180,
                 fit: BoxFit.cover,
                 image: NetworkImage(pr[index].imagePath)
-
-            ),
+               ),
             Text(pr[index].nameProduct),
             Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
 
@@ -175,7 +174,6 @@ class _HomePageState extends State<HomePage> {
      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(  crossAxisCount:  2 ));
 
 //    return GridView.count(
-//
 //      physics: NeverScrollableScrollPhysics(),
 //      shrinkWrap: true,
 //     padding: EdgeInsets.only(top: 10) ,
@@ -192,11 +190,9 @@ class _HomePageState extends State<HomePage> {
 //                width: 180,
 //                fit: BoxFit.cover,
 //                image: NetworkImage(pr[index].imagePath)
-//
 //            ),
 //            Text(pr[index].nameProduct),
 //            Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
-//
 //          ],
 //        ),
 //      );
@@ -357,128 +353,132 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: CustomScrollView(
+      body:  CustomScrollView(
+        slivers: <Widget>[
+          SliverToBoxAdapter(
+            child:   Container(
+              color: Color(0xFFEDEDED),
+              child: Column(
+                children: <Widget>[
+                  _drawCarousselProducts(context, pr),
+                  Padding(
+                    padding:EdgeInsets.only(top: 5,left: 10,right: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("Categories",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            InkWell(
+                                onTap: (){
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                                    return AutoScreenCategories();
+                                  }));
+                                },
+                                child:  buildIcon(0)   ),
+                            buildIcon(1),
+                            buildIcon(2),
+                            buildIcon(3),
+                            buildIcon(4),
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Text("recent Products",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Container(
+                              height: sizeConfig.screenHeight*.3,
+                              child: ListView.builder(
+                                itemCount: pr.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return InkWell(
+                                    onTap: (){
+                                      goToProductDetailsPage(pr[index].priceProduct, pr[index].nameProduct, pr[index].imagePath);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(50)
+                                      ),
+                                      child: Column(
+                                        children: <Widget>[
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Image(
+                                              height: 150,
+                                              width: 180,
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(pr[index].imagePath)
 
-       slivers: <Widget>[
-         SliverToBoxAdapter(
-           child:   Container(
-             color: Color(0xFFEDEDED),
-             child: Column(
-               children: <Widget>[
-                 _drawCarousselProducts(context, pr),
-                 Padding(
-                   padding:EdgeInsets.only(top: 5,left: 10,right: 10),
-                   child: Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                     children: <Widget>[
-                       Text("Categories",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                       SizedBox(height: 10,),
-                       Row(
-                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                         crossAxisAlignment: CrossAxisAlignment.center,
-                         children: <Widget>[
-                           InkWell(
-                               onTap: (){
-                                 Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                                   return AutoScreenCategories();
-                                 }));
-                               },
-                               child:  buildIcon(0)   ),
-                           buildIcon(1),
-                           buildIcon(2),
-                           buildIcon(3),
-                           buildIcon(4),
-                         ],
-                       ),
-                       SizedBox(height: 10,),
-                       Text("recent Products",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                       Padding(
-                         padding: const EdgeInsets.only(top: 10.0),
-                         child: Container(
-                             height: sizeConfig.screenHeight*.3,
-                             child: ListView.builder(
-                               itemCount: pr.length,
-                               scrollDirection: Axis.horizontal,
-                               itemBuilder: (BuildContext context, int index) {
-                                 return Container(
-                                   padding: EdgeInsets.all(5),
-                                   decoration: BoxDecoration(
+                                          ),
+                                          Text(pr[index].nameProduct),
+                                          Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
 
-                                       borderRadius: BorderRadius.circular(50)
-                                   ),
-                                   child: Column(
-                                     children: <Widget>[
-                                       SizedBox(
-                                         height: 5,
-                                       ),
-                                       Image(
-                                           height: 150,
-                                           width: 180,
-                                           fit: BoxFit.cover,
-                                           image: NetworkImage(pr[index].imagePath)
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
 
-                                       ),
-                                       Text(pr[index].nameProduct),
-                                       Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
+                              )
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical:12.0),
+                          child: Text("ALL CARS",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+                        ),
 
-                                     ],
-                                   ),
-                                 );
-                               },
+                      ],
+                    ),
+                  ),
 
-                             )
-                         ),
-                       ),
-                       Padding(
-                         padding: const EdgeInsets.symmetric(vertical:12.0),
-                         child: Text("ALL CARS",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                       ),
+                ],
+              ),
+            ),
+          ),
+          SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                return InkWell(
+                  onTap: (){
+                    goToProductDetailsPage(pr[index].priceProduct, pr[index].nameProduct, pr[index].imagePath);
+                  },
+                  child: Container(
+                    color: Color(0xFFEDEDED),
+                    child: Column(
+                      children: <Widget>[
+                        Image(
+                            height: 150,
+                            width: 180,
+                            fit: BoxFit.cover,
+                            image: NetworkImage(pr[index].imagePath)
 
-                     ],
-                   ),
-                 ),
+                        ),
+                        Text(pr[index].nameProduct),
+                        Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
 
-               ],
-             ),
-           ),
-         ),
-         SliverGrid(
-           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-           delegate: SliverChildBuilderDelegate(
-                 (BuildContext context, int index) {
-                   return Container(
-                     color: Color(0xFFEDEDED),
-                     child: Column(
-                       children: <Widget>[
+                      ],
+                    ),),
+                );
+              },
+              childCount: pr.length,
+            ),
+          )
 
-                         Image(
-                             height: 150,
-                             width: 180,
-                             fit: BoxFit.cover,
-                             image: NetworkImage(pr[index].imagePath)
-
-                         ),
-                         Text(pr[index].nameProduct),
-                         Text("\$ ${pr[index].priceProduct} ",style: TextStyle(color: Colors.red)),
-
-                       ],
-                     ),);
-             },
-             childCount: pr.length,
-           ),
-         )
-
-       ],
+        ],
 
       ),
       appBar: AppBar(
         actionsIconTheme:
             IconThemeData(color: mainTheme.primaryColorDark, size: 35),
         iconTheme: IconThemeData(color: mainTheme.primaryColorDark, size: 35),
-        title: Text("Home",
-            style: TextStyle(
-                color: mainTheme.primaryColorDark,
-                fontWeight: FontWeight.bold)),
+        title: Text("Home",  style: TextStyle(  color: mainTheme.primaryColorDark,  fontWeight: FontWeight.bold)),
         backgroundColor: mainTheme.primaryColorLight,
         elevation: 0,
         actions: <Widget>[
@@ -495,52 +495,13 @@ class _HomePageState extends State<HomePage> {
         ],
         centerTitle: true,
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        color: mainTheme.primaryColorDark,
-        height: sizeConfig.screenHeight * .07,
-        backgroundColor: mainTheme.primaryColorLight,
-        onTap: (value) {
-          setState(() {
-            //    currentIndex =value;
-            //    print(currentIndex);
-          });
-        },
-        items: <Widget>[
-          Icon(
-            Icons.home,
-            color: Colors.white,
-            size: 30,
-          ),
-          Icon(
-            Icons.directions,
-            color: Colors.white,
-            size: 25,
-          ),
-          Icon(
-            FontAwesomeIcons.camera,
-            color: Colors.white,
-            size: 25,
-          ),
-          Icon(
-            FontAwesomeIcons.user,
-            color: Colors.white,
-            size: 25,
-          ),
-          Icon(
-            Icons.linear_scale,
-            color: Colors.white,
-            size: 30,
-          )
-        ],
-      ),
-    );
+       );
   }
-
   List<Widget> _pageViewDots(int qty, BuildContext context) {
     List<Widget> widgets = [];
     for (int i = 0; i < qty; i++) {
-      widgets.add(Container(
-          decoration: BoxDecoration(
+      widgets.add(
+          Container( decoration: BoxDecoration(
               color: (i == currentIndex)
                   ? mainTheme.primaryColorDark
                   : Colors.grey[400],
@@ -569,7 +530,7 @@ class _HomePageState extends State<HomePage> {
     return UserAccountsDrawerHeader
       (
       accountName: Text(snapshot.data.documents[0]['name']),
-      accountEmail: Text("mbardouni44@gmail.com"),
+      accountEmail: Text(snapshot.data.documents[0]['email']),
       currentAccountPicture:
       ClipRRect(
           borderRadius: BorderRadius.circular(40),
@@ -579,7 +540,16 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  Widget error(String s) {
-    return Text(s);
+
+  void goToProductDetailsPage(double productPrice,String productName,String productImage ) {
+
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) {
+          return ProductDetails(
+            productPrice: productPrice,
+            productName: productName,
+            productImage: productImage,
+          );
+        } ));
   }
 }

@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sellusedstuff/constant.dart';
+import 'package:sellusedstuff/home_screen.dart';
 import 'package:sellusedstuff/utils/screen_size.dart';
 import 'package:sellusedstuff/utils/shared_widget.dart';
 import 'package:sellusedstuff/utils/show_dialog.dart';
 import 'package:sellusedstuff/utils/welcome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../home_page.dart';
+import '../pages/home_page.dart';
 import 'register_screen.dart';
 import '../utils/mainTheme.dart';
 
@@ -165,7 +166,7 @@ SharedPreferences shared =await SharedPreferences.getInstance();
      String userId = value.user.uid;
      shared.setString(Constant.Kuser_id,userId);
      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
-       return HomePage();
+       return HomeScreen();
      }));
    }).catchError((onError){
      String l =onError.toString().split(",")[1];

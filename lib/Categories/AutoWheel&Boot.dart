@@ -10,7 +10,6 @@ class _AutoState extends State<AutoScreenCategories> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         title:Text(" Auto") ,
       ),

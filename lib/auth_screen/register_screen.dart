@@ -3,7 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sellusedstuff/home_page.dart';
+import 'package:sellusedstuff/home_screen.dart';
+import 'file:///D:/n/sell_used_stuff/lib/pages/home_page.dart';
 import 'package:sellusedstuff/utils/screen_size.dart';
 import 'package:sellusedstuff/utils/shared_widget.dart';
 import 'package:sellusedstuff/utils/show_dialog.dart';
@@ -185,19 +186,21 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
           }
         }
   }
-
   void callFirebaseToSignUp()async {
     SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
-      _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password).then((value) {
+      _firebaseAuth.createUserWithEmailAndPassword(email: email , password:password).then((value) {
         if(value.user!=null){
           sharedPreferences.setString(Constant.Kuser_id ,value.user.uid);
 
           Firestore.instance.collection("profiles").document().setData(
               {
-                Constant.Kuser_id : value.user.uid
+                Constant.Kuser_id : value.user.uid,
+                "email":email,
+                "name":email.substring(0,4)
+
               }).then((value) {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
-              return HomePage();
+              return HomeScreen();
             }   ));
           }
           ).catchError((onError){    print(onError.toString());});  }
@@ -210,8 +213,6 @@ class _ClientRegisterScreenState extends State<RegisterScreen> {
         });
       });
   }
-
-
   void userAccountDetails(){
     email=_emailController.text.trim();
     password=_passwordController.text.trim();
